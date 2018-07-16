@@ -1,4 +1,5 @@
 var smileFactor;
+var face;
 
 (function exampleCode() {
 	"use strict";
@@ -22,7 +23,7 @@ var smileFactor;
 
 		for(var i = 0; i < faces.length; i++) {
 
-			var face = faces[i];
+			face = faces[i];
 
 			if(		face.state === brfv4.BRFState.FACE_TRACKING_START ||
 					face.state === brfv4.BRFState.FACE_TRACKING) {
@@ -60,8 +61,8 @@ var smileFactor;
 
 				// Face Tracking results: 68 facial feature points.
 
-				draw.drawTriangles(	face.vertices, face.triangles, false, 1.0, color, 0.4);
-				draw.drawVertices(	face.vertices, 2.0, false, color, 0.4);
+				//draw.drawTriangles(	face.vertices, face.triangles, false, 1.0, color, 0.4);
+				//draw.drawVertices(	face.vertices, 2.0, false, color, 0.4);
 
 				// brfv4Example.dom.updateHeadline("BRFv4 - intermediate - face tracking - simple " +
 				// 	"smile detection.\nDetects how much someone is smiling. smile factor: " +
@@ -93,18 +94,19 @@ var squiggly;
 var two;
 
 two = new Two({
-    width: 3500,
-    height: 750
+    width: 1280,
+    height: 720
 }).appendTo(overlay);
 
 function getRandom(min, max) {
     return Math.random() * (max - min) + min;
 }
 
+
 //importing svgs, placing them randomly on canvas, moving them
-function Shape(element,amount, scale, xspeed, yspeed) {
+function Shape(element, scale, xspeed, yspeed) {
 	this.element = element;
-	this.amount = amount;
+	// this.amount = amount;
 	this.scale = scale;
 	this.xspeed = xspeed;
 	this.yspeed = yspeed;
@@ -112,12 +114,16 @@ function Shape(element,amount, scale, xspeed, yspeed) {
 	let new_element;
 
 	this.update = function(){
-		for (var i=0;i<elements.length;i++) {
-			elements[i].translation.x += this.xspeed;
-			elements[i].translation.y += this.yspeed;
-			this.xspeed = this.bounce(elements[i].translation.x, this.xspeed,0,1000);
-			this.yspeed = this.bounce(elements[i].translation.y, this.yspeed,0,550);
-		}
+		let timer = 0.0001 * Date.now();
+		//for (var i=0;i<elements.length;i++) {
+		new_element.translation.x += this.xspeed;
+		new_element.translation.y += this.yspeed;
+		//new_element.rotation += getRandom(0.1,0.5) * Math.cos( 0.0001 );
+		//console.log(Math.sin(180) * 200);
+		this.xspeed = this.bounce(new_element.translation.x, this.xspeed,0,1000);
+		this.yspeed = this.bounce(new_element.translation.y, this.yspeed,0,650);
+		//console.log(elements[i].translation.x);
+		//}
 	};
 
 	//Bounce function
@@ -128,57 +134,95 @@ function Shape(element,amount, scale, xspeed, yspeed) {
     return speed;
 	};
 
-  // this.bounce = function(){
-	// 	//console.log(elements);
-	// 	for (var i=0;i<elements.length;i++) {
-	// 		elements[i].translation.x += this.xspeed;
-	// 		elements[i].translation.y += this.yspeed;
-	//
-	// 		// if(elements[i].translation.x < 0 || elements[i].translation.x > 1000) {
-	//     //   xspeed *= -1;
-	//     // }
-	// 		// if(elements[i].translation.y < 0 || elements[i].translation.y > 650) {
-	// 		// 	yspeed *= -1;
-	// 		// }
-  // 	};
-	// }
-
   this.display = function() {
 		let first = document.querySelector(this.element);
-		for (var i=0; i<this.amount;i++) {
-			new_element = two.interpret(first);
-			new_element.translation.set(getRandom(0,1000),getRandom(0,650));
-			elements.push(new_element);
-		}
-		return elements
+		//for (var i=0; i<this.amount;i++) {
+		new_element = two.interpret(first);
+		new_element.translation.set(getRandom(0,1000),getRandom(0,650));
+			//elements.push(new_element);
+		//}
+		return new_element
   }
+
+	this.pt = function() {
+		let position = [];
+		position.push (new_element.translation.x);
+		position.push (new_element.translation.y);
+		return position;
+	}
 }
 
-red = new Shape('#red',10,1,3,2);
-red.display();
-console.log(red);
-blue = new Shape('#blue',10,1,3,2);
-blue.display();
-yellow = new Shape('#yellow',10,1,3,2);
-yellow.display();
-redDot = new Shape('#redDot',10,1,3,2);
-redDot.display();
-pink = new Shape('#pink',10,1,3,2);
-pink.display();
-squiggly = new Shape('#squiggly',10,1,3,2);
-squiggly.display();
+var reds = [];
+var blues = [];
+var yellows = [];
+var pinks = [];
+var redDots = [];
+var squigglies = [];
+var whities = [];
 
-//two.renderer.domElement.style.background = '#1DA1F2';
+// for(var i=0;i<10;i++){
+// 	red = new Shape('#red',1,3,2);
+// 	red.display();
+// 	reds.push(red);
+//
+// 	blue = new Shape('#blue',1,-3,-2);
+// 	blue.display();
+// 	blues.push(blue);
+//
+// 	yellow = new Shape('#yellow',1,1,1);
+// 	yellow.display();
+// 	yellows.push(yellow);
+//
+// 	pink = new Shape('#pink',1,4,1);
+// 	pink.display();
+// 	pinks.push(pink);
+//
+// 	redDot = new Shape('#redDot',1,-4,-2);
+// 	redDot.display();
+// 	redDots.push(redDot);
+//
+// 	squiggly = new Shape('#squiggly',1,-5,-3);
+// 	squiggly.display();
+// 	squigglies.push(squiggly);
+//
+// 	white = new Shape('#white',1,-1,-2);
+// 	white.display();
+// 	whities.push(white);
+// }
+
+two.renderer.domElement.style.background = '#1DA1F2';
 //two.update();
 
 two.bind('update', function(frameCount) {
+	//console.log(left_face_x);
+	two.clear();
+	if (face){
+		for (var i=0;i<54;i+=2){
+			var circle = two.makeCircle(face.vertices[i], face.vertices[i+1], 5);
+		}
+
+		// for (var i=0;i<54;i+=2){
+		// 	//var circle = two.makeCircle(face.vertices[i], face.vertices[i+1], 5);
+		// 	two.makePath(face.vertices[i], face.vertices[i+1], face.vertices[i+2], face.vertices[i+3], open);
+		// }
+		console.log("yes");
+	}
   // This code is called everytime two.update() is called.
   // Effectively 60 times per second.
-	red.update();
-	blue.update();
-	yellow.update();
-	pink.update();
-	redDot.update();
-	squiggly.update();
+	// if (smileFactor == 1) {
+	// 	console.log("smiling");
+	// 	// let center = reds[0].pt();
+	// 	// console.log(center);
+	// } else {
+	// 	for(let i=0;i<reds.length;i++){
+	// 		reds[i].update();
+	// 		blues[i].update();
+	// 		yellows[i].update();
+	// 		pinks[i].update();
+	// 		redDots[i].update();
+	// 		squigglies[i].update();
+	// 		whities[i].update();
+	// 	}
+	// }
 
 }).play();  // Finally, start the animation loop
