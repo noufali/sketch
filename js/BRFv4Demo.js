@@ -87,8 +87,7 @@ brfv4Example.start = function() {
     'js/shaders/RGBShiftShader.js',
     'js/shaders/StaticShader.js',
 		'js/shaders/dat.gui.min.js',
-		"js/shaders/p5.js",
-		"js/shaders/p5.dom.js",
+		"js/shaders/two.js",
 
 		"js/utils/BRFv4DOMUtils.js",							// DOM handling
 		"js/utils/BRFv4Stats.js",								// FPS meter

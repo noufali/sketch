@@ -22,6 +22,14 @@ video 			{ position: absolute; background-color: transparent; display: none;  ma
   -webkit-filter: grayscale(100%); /* Safari 6.0 - 9.0 */
   filter: grayscale(100%);
 }
-/* #overlay {
-  background-color: rgba(0,0,0,0.5);
-} */
+#overlay {
+  /* background-color: rgba(0,0,0,0.5); */
+  z-index: 999;
+  position: absolute;
+  width:1280px;
+  height: 720px;
+}
+
+svg {
+  visibility: hidden;
+}
