@@ -121,25 +121,31 @@ function dist (x1, y1, x2, y2) {
 //importing svgs, placing them randomly on canvas, moving them
 function Shape(element, scale, xspeed, yspeed) {
 	this.element = element;
-	// this.amount = amount;
 	this.scale = scale;
 	this.xspeed = xspeed;
 	this.yspeed = yspeed;
-	let elements = [];
 	let new_element;
+	let location;
+	let velocity;
+	let acceleration;
 
-	this.update = function(){
-		let timer = 0.0001 * Date.now();
+	this.update = function() {
+		// velocity.addSelf(acceleration);
+		// location.addSelf(velocity);
+		//
+		// new_element.translation = location;
+		//
+		// acceleration.x = this.bounce(new_element.translation.x, acceleration.x,0,1000);
+		// acceleration.y = this.bounce(new_element.translation.y, acceleration.y,0,650);
 
-		//for (var i=0;i<elements.length;i++) {
+		// return location
+		//console.log(location);
 		new_element.translation.x += this.xspeed;
 		new_element.translation.y += this.yspeed;
 		//new_element.rotation += getRandom(0.1,0.5) * Math.cos( 0.0001 );
 		//console.log(Math.sin(180) * 200);
 		this.xspeed = this.bounce(new_element.translation.x, this.xspeed,0,1000);
 		this.yspeed = this.bounce(new_element.translation.y, this.yspeed,0,650);
-		//console.log(elements[i].translation.x);
-		//}
 	};
 
 	//Bounce function
@@ -151,9 +157,6 @@ function Shape(element, scale, xspeed, yspeed) {
 	};
 
 	this.closest = function(targets){
-		// var location = new pVector(new_element.translation.x,new_element.translation.y);
-		// var velocity = new pVector(0,0);
-		// var acceleration = new pVector(0,0);
 		let distances = {};
 
 		function getKeyByValue(object, value) {
@@ -165,9 +168,21 @@ function Shape(element, scale, xspeed, yspeed) {
 		}
 		var arr = Object.keys( distances ).map(function ( key ) { return distances[key]; });
 		var min = Math.min.apply( null, arr );
-		var which = getKeyByValue(distances,min);
+		var index = getKeyByValue(distances,min);
+		var attractor = targets[index];
+		//var attractor_vector = new pVector(attractor.x,attractor.y);
+		// var vector = new Two.Vector(attractor.x,attractor.y);
+		// var dir = vector.sub(location.x,location.y);
+		// dir.normalize();
+		// dir.multiplyScalar(0.5);
+		// acceleration = dir;
+		//
+		// velocity.add(acceleration.x,acceleration.y);
+		// //velocity.limit(topspeed);
+		// location.add(velocity.x,velocity.y);
+		// new_element.translation.set(location.x,location.y);
 
-		return which
+		return attractor
 	}
 	this.move = function(point){
 		new_element.translation.set(point.x,point.y);
@@ -175,11 +190,12 @@ function Shape(element, scale, xspeed, yspeed) {
 	}
   this.display = function() {
 		let first = document.querySelector(this.element);
-		//for (var i=0; i<this.amount;i++) {
 		new_element = two.interpret(first);
 		new_element.translation.set(getRandom(0,1000),getRandom(0,650));
-			//elements.push(new_element);
-		//}
+		location = new Two.Vector(new_element.translation.x,new_element.translation.y);
+		velocity = new Two.Vector(0,0);
+		acceleration = new Two.Vector(-0.001,0.01);
+
 		return new_element
   }
 
@@ -189,72 +205,6 @@ function Shape(element, scale, xspeed, yspeed) {
 		position.push (new_element.translation.y);
 		return position;
 	}
-}
-
-function pVector(x, y) {
-  this.x = x;
-  this.y = y;
-	this.mag = 0;
-
-  this.add = function(n) {
-    this.x = this.x + n.x;
-    this.y = this.y + n.y;
-  }
-
-  this.display = function(o) {
-		two.makePath(this.x,this.y,o.x,o.y);
-  }
-
-  this.subtract = function(s) {
-    this.x = this.x - s.x;
-    this.y = this.y - s.y;
-  }
-
-  this.multiply = function(m) {
-    this.x = this.x * m;
-    this.y = this.y * m;
-  }
-
-  this.calcMag = function() {
-    this.mag = Math.sqrt(this.x * this.x + this.y * this.y);
-    //console.log(this.mag);
-  }
-
-  this.setMag = function(smthg) {
-    this.calcMag();
-
-    if (this.mag != 0) {
-      var v = smthg/this.mag;
-      this.mag = this.mag * v;
-      this.x = this.x * v;
-      this.y = this.y * v;
-
-      //console.log(this.mag);
-    }
-
-  }
-
-  this.norm = function() {
-    var m = Math.sqrt(this.x * this.x + this.y * this.y);
-    if (m != 0) {
-      this.x = this.x / m;
-      this.y = this.y / m;
-    }
-  }
-
-  this.limit = function(max) {
-    this.calcMag();
-
-    if (this.mag > max) {
-      //this.mag = max;
-      var v = max/this.mag;
-      this.mag = this.mag * v;
-      this.x = this.x * v;
-      this.y = this.y * v;
-    }
-    //console.log(this.mag);
-    console.log(sqrt(this.x * this.x + this.y * this.y));
-  }
 }
 
 var reds = [];
@@ -273,7 +223,7 @@ for(var i=0;i<10;i++){
 	blue = new Shape('#blue',1,-3,-2);
 	blue.display();
 	blues.push(blue);
-//
+
 // 	yellow = new Shape('#yellow',1,1,1);
 // 	yellow.display();
 // 	yellows.push(yellow);
@@ -324,13 +274,13 @@ two.bind('update', function(frameCount) {
 	if (smileFactor == 1) {
 		console.log("smiling");
 		for(let i=0;i<reds.length;i++) {
-				let which = reds[i].closest(face_Pts);
-				let pt = face_Pts[which];
+				let pt = reds[i].closest(face_Pts);
+				//let pt = face_Pts[which];
 	  		reds[i].move(pt);
 			}
 		for(let i=0;i<blues.length;i++) {
-				let which = blues[i].closest(face_Pts);
-				let pt = face_Pts[which];
+				let pt = blues[i].closest(face_Pts);
+				//let pt = face_Pts[which];
 				blues[i].move(pt);
 			}
 	} else {
