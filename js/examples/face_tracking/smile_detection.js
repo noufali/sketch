@@ -170,19 +170,18 @@ function Shape(element, scale, xspeed, yspeed) {
 		var min = Math.min.apply( null, arr );
 		var index = getKeyByValue(distances,min);
 		var attractor = targets[index];
-		//var attractor_vector = new pVector(attractor.x,attractor.y);
-		// var vector = new Two.Vector(attractor.x,attractor.y);
-		// var dir = vector.sub(location.x,location.y);
-		// dir.normalize();
-		// dir.multiplyScalar(0.5);
-		// acceleration = dir;
-		//
-		// velocity.add(acceleration.x,acceleration.y);
-		// //velocity.limit(topspeed);
-		// location.add(velocity.x,velocity.y);
-		// new_element.translation.set(location.x,location.y);
 
-		return attractor
+		var vector = new Two.Vector(attractor.x,attractor.y);
+		var dir = vector.subSelf(location);
+		dir.normalize();
+		dir.multiplyScalar(0.5);
+		acceleration = dir;
+
+		velocity.addSelf(acceleration);
+		location.addSelf(velocity);
+		new_element.translation = location;
+
+		// return attractor
 	}
 	this.move = function(point){
 		new_element.translation.set(point.x,point.y);
@@ -194,7 +193,7 @@ function Shape(element, scale, xspeed, yspeed) {
 		new_element.translation.set(getRandom(0,1000),getRandom(0,650));
 		location = new Two.Vector(new_element.translation.x,new_element.translation.y);
 		velocity = new Two.Vector(0,0);
-		acceleration = new Two.Vector(-0.001,0.01);
+		acceleration = new Two.Vector(this.xspeed,this.yspeed);
 
 		return new_element
   }
@@ -215,14 +214,14 @@ var redDots = [];
 var squigglies = [];
 var whities = [];
 
-for(var i=0;i<10;i++){
+for(var i=0;i<3;i++){
 	red = new Shape('#red',1,3,2);
 	red.display();
 	reds.push(red);
 
-	blue = new Shape('#blue',1,-3,-2);
-	blue.display();
-	blues.push(blue);
+	// blue = new Shape('#blue',1,2,-3);
+	// blue.display();
+	// blues.push(blue);
 
 // 	yellow = new Shape('#yellow',1,1,1);
 // 	yellow.display();
@@ -274,19 +273,19 @@ two.bind('update', function(frameCount) {
 	if (smileFactor == 1) {
 		console.log("smiling");
 		for(let i=0;i<reds.length;i++) {
-				let pt = reds[i].closest(face_Pts);
+				reds[i].closest(face_Pts);
 				//let pt = face_Pts[which];
-	  		reds[i].move(pt);
+	  		//reds[i].move(pt);
 			}
-		for(let i=0;i<blues.length;i++) {
-				let pt = blues[i].closest(face_Pts);
-				//let pt = face_Pts[which];
-				blues[i].move(pt);
-			}
+		// for(let i=0;i<blues.length;i++) {
+		// 		blues[i].closest(face_Pts);
+		// 		//let pt = face_Pts[which];
+		// 		//blues[i].move(pt);
+		// 	}
 	} else {
 		for(let i=0;i<reds.length;i++) {
 	  		reds[i].update();
-	   		blues[i].update();
+	   		//blues[i].update();
 	// 		yellows[i].update();
 	// 		pinks[i].update();
 	// 		redDots[i].update();
