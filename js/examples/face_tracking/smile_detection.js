@@ -122,6 +122,10 @@ function getKeyByValue(object, value) {
 	return Object.keys(object).find(key => object[key] === value);
 }
 
+Array.min = function( array ){
+    return Math.min.apply( Math, array );
+};
+
 
 //importing svgs, placing them randomly on canvas, moving them
 function Shape(element, scale, xspeed, yspeed) {
@@ -156,17 +160,23 @@ function Shape(element, scale, xspeed, yspeed) {
 	};
 
 	this.closest = function(targets){
-		let distances = {};
+		let distances = [];
 
+		// for (var i=0;i<targets.length;i++){
+		// 	distances[i] = dist(new_element.translation.x,new_element.translation.y,targets[i].x,targets[i].y);
+		// }
 		for (var i=0;i<targets.length;i++){
-			distances[i] = dist(new_element.translation.x,new_element.translation.y,targets[i].x,targets[i].y);
+			distance = dist(new_element.translation.x,new_element.translation.y,targets[i].x,targets[i].y);
+			distances.push(distance);
 		}
-		var arr = Object.keys( distances ).map(function ( key ) { return distances[key]; });
-		var min = Math.min.apply( null, arr );
-		var index = getKeyByValue(distances,min);
-		var attractor = targets[index];
 
-		return attractor
+		var minimum = Array.min(distances);
+		//var arr = Object.keys( distances ).map(function ( key ) { return distances[key]; });
+		//var min = Math.min.apply( null, arr );
+		//var index = getKeyByValue(distances,min);
+		//var attractor = targets[index];
+
+		return minimum
 	}
 	this.move = function(circle){
 		var vector = new Two.Vector(circle.x,circle.y);
@@ -201,36 +211,39 @@ var redDots = [];
 var squigglies = [];
 var whities = [];
 
-for(var i=0;i<3;i++){
-	red = new Shape('#red',1,3,2);
-	red.display();
-	reds.push(red);
+document.onload = function () {
+	console.log("loaded");
+	for(var i=0;i<2;i++){
+		red = new Shape('#red',1,3,2);
+		red.display();
+		reds.push(red);
 
-	// blue = new Shape('#blue',1,2,-3);
-	// blue.display();
-	// blues.push(blue);
+		// blue = new Shape('#blue',1,2,-3);
+		// blue.display();
+		// blues.push(blue);
 
-	// 	yellow = new Shape('#yellow',1,1,1);
-	// 	yellow.display();
-	// 	yellows.push(yellow);
-	//
-	// 	pink = new Shape('#pink',1,4,1);
-	// 	pink.display();
-	// 	pinks.push(pink);
-	//
-	// 	redDot = new Shape('#redDot',1,-4,-2);
-	// 	redDot.display();
-	// 	redDots.push(redDot);
-	//
-	// 	squiggly = new Shape('#squiggly',1,-5,-3);
-	// 	squiggly.display();
-	// 	squigglies.push(squiggly);
-	//
-	// 	white = new Shape('#white',1,-1,-2);
-	// 	white.display();
-	// 	whities.push(white);
+		// 	yellow = new Shape('#yellow',1,1,1);
+		// 	yellow.display();
+		// 	yellows.push(yellow);
+		//
+		// 	pink = new Shape('#pink',1,4,1);
+		// 	pink.display();
+		// 	pinks.push(pink);
+		//
+		// 	redDot = new Shape('#redDot',1,-4,-2);
+		// 	redDot.display();
+		// 	redDots.push(redDot);
+		//
+		// 	squiggly = new Shape('#squiggly',1,-5,-3);
+		// 	squiggly.display();
+		// 	squigglies.push(squiggly);
+		//
+		// 	white = new Shape('#white',1,-1,-2);
+		// 	white.display();
+		// 	whities.push(white);
+	}
+	console.log(reds[0].translation);
 }
-
 two.renderer.domElement.style.background = '#1DA1F2';
 //two.update();
 let anchors = [];
@@ -252,6 +265,7 @@ two.bind('update', function(frameCount) {
 		// for(var j=0;j<face_Pts.length;j++){
 		// 	var circle = two.makeCircle(face_Pts[j].x, face_Pts[j].y, 5);
 		// }
+
 		// for (var i=0;i<54;i+=2){
 		// 	//var circle = two.makeCircle(face.vertices[i], face.vertices[i+1], 5);
 		// 	two.makePath(face.vertices[i], face.vertices[i+1], face.vertices[i+2], face.vertices[i+3], open);
@@ -260,34 +274,24 @@ two.bind('update', function(frameCount) {
 
 	//if smiling, stop shape movement
 	if (smileFactor == 1) {
-		// let anchor = {};
 		console.log("smiling");
 		if (status == 0) {
 			for(let i=0;i<reds.length;i++) {
 					let circle = reds[i].closest(face_Pts);
-					// anchor[reds[i]] = circle;
-					//anchors = [ {shape:circle}, {shape:circle} ]
-					anchors.push(reds[i]);
-					anchors.push(circle);
-					// two.makeCircle(circle.x, circle.y, 5);
-					// reds[i].move(circle);
-					//let pt = face_Pts[which];
-		  		//reds[i].move(pt);
+					console.log(circle);
+					//anchors.push(reds[i]);
+					//anchors.push(circle);
 			}
-			console.log(status);
-			console.log(anchors);
 			status = 1;
 		} else {
 			//draw circles
-			for (var i=1;i<anchors.length;i+=2){
-				two.makeCircle(anchors[i].x, anchors[i].y, 5);
-			}
-			//move shapes
-			for (var i=0;i<anchors.length;i+=2){
-				//let key = getKeyByValue(anchors, anchors[i])
-				anchors[i].move(anchors[i+1]);
-				// console.log(key);
-			}
+			// for (var i=1;i<anchors.length;i+=2){
+			// 	two.makeCircle(anchors[i].x, anchors[i].y, 5);
+			// }
+			// //move shapes
+			// for (var i=0;i<anchors.length;i+=2){
+			// 	anchors[i].move(anchors[i+1]);
+			// }
 		}
 		// for(let i=0;i<blues.length;i++) {
 		// 		blues[i].closest(face_Pts);
