@@ -92,6 +92,7 @@ var redDot;
 var pink;
 var squiggly;
 var two;
+var status = 0;
 
 two = new Two({
     width: 1280,
@@ -117,6 +118,10 @@ function dist (x1, y1, x2, y2) {
   return (dist);
 };
 
+function getKeyByValue(object, value) {
+	return Object.keys(object).find(key => object[key] === value);
+}
+
 
 //importing svgs, placing them randomly on canvas, moving them
 function Shape(element, scale, xspeed, yspeed) {
@@ -134,16 +139,10 @@ function Shape(element, scale, xspeed, yspeed) {
 		// location.addSelf(velocity);
 		//
 		// new_element.translation = location;
-		//
-		// acceleration.x = this.bounce(new_element.translation.x, acceleration.x,0,1000);
-		// acceleration.y = this.bounce(new_element.translation.y, acceleration.y,0,650);
 
-		// return location
-		//console.log(location);
 		new_element.translation.x += this.xspeed;
 		new_element.translation.y += this.yspeed;
 		//new_element.rotation += getRandom(0.1,0.5) * Math.cos( 0.0001 );
-		//console.log(Math.sin(180) * 200);
 		this.xspeed = this.bounce(new_element.translation.x, this.xspeed,0,1000);
 		this.yspeed = this.bounce(new_element.translation.y, this.yspeed,0,650);
 	};
@@ -159,10 +158,6 @@ function Shape(element, scale, xspeed, yspeed) {
 	this.closest = function(targets){
 		let distances = {};
 
-		function getKeyByValue(object, value) {
-		  return Object.keys(object).find(key => object[key] === value);
-		}
-
 		for (var i=0;i<targets.length;i++){
 			distances[i] = dist(new_element.translation.x,new_element.translation.y,targets[i].x,targets[i].y);
 		}
@@ -171,7 +166,10 @@ function Shape(element, scale, xspeed, yspeed) {
 		var index = getKeyByValue(distances,min);
 		var attractor = targets[index];
 
-		var vector = new Two.Vector(attractor.x,attractor.y);
+		return attractor
+	}
+	this.move = function(circle){
+		var vector = new Two.Vector(circle.x,circle.y);
 		var dir = vector.subSelf(location);
 		dir.normalize();
 		dir.multiplyScalar(0.5);
@@ -180,12 +178,8 @@ function Shape(element, scale, xspeed, yspeed) {
 		velocity.addSelf(acceleration);
 		location.addSelf(velocity);
 		new_element.translation = location;
-
-		// return attractor
-	}
-	this.move = function(point){
-		new_element.translation.set(point.x,point.y);
-		return new_element
+		// new_element.translation.set(point.x,point.y);
+		// return new_element
 	}
   this.display = function() {
 		let first = document.querySelector(this.element);
@@ -197,13 +191,6 @@ function Shape(element, scale, xspeed, yspeed) {
 
 		return new_element
   }
-
-	this.pt = function() {
-		let position = [];
-		position.push (new_element.translation.x);
-		position.push (new_element.translation.y);
-		return position;
-	}
 }
 
 var reds = [];
@@ -223,37 +210,38 @@ for(var i=0;i<3;i++){
 	// blue.display();
 	// blues.push(blue);
 
-// 	yellow = new Shape('#yellow',1,1,1);
-// 	yellow.display();
-// 	yellows.push(yellow);
-//
-// 	pink = new Shape('#pink',1,4,1);
-// 	pink.display();
-// 	pinks.push(pink);
-//
-// 	redDot = new Shape('#redDot',1,-4,-2);
-// 	redDot.display();
-// 	redDots.push(redDot);
-//
-// 	squiggly = new Shape('#squiggly',1,-5,-3);
-// 	squiggly.display();
-// 	squigglies.push(squiggly);
-//
-// 	white = new Shape('#white',1,-1,-2);
-// 	white.display();
-// 	whities.push(white);
+	// 	yellow = new Shape('#yellow',1,1,1);
+	// 	yellow.display();
+	// 	yellows.push(yellow);
+	//
+	// 	pink = new Shape('#pink',1,4,1);
+	// 	pink.display();
+	// 	pinks.push(pink);
+	//
+	// 	redDot = new Shape('#redDot',1,-4,-2);
+	// 	redDot.display();
+	// 	redDots.push(redDot);
+	//
+	// 	squiggly = new Shape('#squiggly',1,-5,-3);
+	// 	squiggly.display();
+	// 	squigglies.push(squiggly);
+	//
+	// 	white = new Shape('#white',1,-1,-2);
+	// 	white.display();
+	// 	whities.push(white);
 }
 
 two.renderer.domElement.style.background = '#1DA1F2';
 //two.update();
+let anchors = [];
 
 two.bind('update', function(frameCount) {
 	var face_Pts = [];
-	//console.log(left_face_x);
 	two.clear();
+
 	//reorganize list into dictionary with point objects
 	if (face) {
-		for (var i=0;i<54;i+=2){
+		for (var i=0;i<54;i+=2) {
 			// var circle = two.makeCircle(face.vertices[i], face.vertices[i+1], 5);
 			var point = {};
 			point['x'] = face.vertices[i];
@@ -261,37 +249,63 @@ two.bind('update', function(frameCount) {
 			face_Pts.push(point);
 		}
 		//draw circles on face points
-		for(var j=0;j<face_Pts.length;j++){
-			var circle = two.makeCircle(face_Pts[j].x, face_Pts[j].y, 5);
-		}
+		// for(var j=0;j<face_Pts.length;j++){
+		// 	var circle = two.makeCircle(face_Pts[j].x, face_Pts[j].y, 5);
+		// }
 		// for (var i=0;i<54;i+=2){
 		// 	//var circle = two.makeCircle(face.vertices[i], face.vertices[i+1], 5);
 		// 	two.makePath(face.vertices[i], face.vertices[i+1], face.vertices[i+2], face.vertices[i+3], open);
 		// }
 	}
+
 	//if smiling, stop shape movement
 	if (smileFactor == 1) {
+		// let anchor = {};
 		console.log("smiling");
-		for(let i=0;i<reds.length;i++) {
-				reds[i].closest(face_Pts);
-				//let pt = face_Pts[which];
-	  		//reds[i].move(pt);
+		if (status == 0) {
+			for(let i=0;i<reds.length;i++) {
+					let circle = reds[i].closest(face_Pts);
+					// anchor[reds[i]] = circle;
+					//anchors = [ {shape:circle}, {shape:circle} ]
+					anchors.push(reds[i]);
+					anchors.push(circle);
+					// two.makeCircle(circle.x, circle.y, 5);
+					// reds[i].move(circle);
+					//let pt = face_Pts[which];
+		  		//reds[i].move(pt);
 			}
+			console.log(status);
+			console.log(anchors);
+			status = 1;
+		} else {
+			//draw circles
+			for (var i=1;i<anchors.length;i+=2){
+				two.makeCircle(anchors[i].x, anchors[i].y, 5);
+			}
+			//move shapes
+			for (var i=0;i<anchors.length;i+=2){
+				//let key = getKeyByValue(anchors, anchors[i])
+				anchors[i].move(anchors[i+1]);
+				// console.log(key);
+			}
+		}
 		// for(let i=0;i<blues.length;i++) {
 		// 		blues[i].closest(face_Pts);
 		// 		//let pt = face_Pts[which];
 		// 		//blues[i].move(pt);
 		// 	}
 	} else {
+		anchors = [];
+		status = 0;
 		for(let i=0;i<reds.length;i++) {
 	  		reds[i].update();
 	   		//blues[i].update();
-	// 		yellows[i].update();
-	// 		pinks[i].update();
-	// 		redDots[i].update();
-	// 		squigglies[i].update();
-	// 		whities[i].update();
+				//yellows[i].update();
+				//pinks[i].update();
+				//redDots[i].update();
+				//squigglies[i].update();
+				//whities[i].update();
 	 	}
 	 }
 
-}).play();  // Finally, start the animation loop
+}).play();
