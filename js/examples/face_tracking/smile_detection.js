@@ -127,7 +127,7 @@ Array.min = function( array ){
 };
 
 
-//importing svgs, placing them randomly on canvas, moving them
+//importing svgs, placing them randomly on canvas, moving them etc
 function Shape(element, scale, xspeed, yspeed) {
 	this.element = element;
 	this.scale = scale;
@@ -137,13 +137,9 @@ function Shape(element, scale, xspeed, yspeed) {
 	let location;
 	let velocity;
 	let acceleration;
+	let index;
 
 	this.update = function() {
-		// velocity.addSelf(acceleration);
-		// location.addSelf(velocity);
-		//
-		// new_element.translation = location;
-
 		new_element.translation.x += this.xspeed;
 		new_element.translation.y += this.yspeed;
 		//new_element.rotation += getRandom(0.1,0.5) * Math.cos( 0.0001 );
@@ -159,8 +155,15 @@ function Shape(element, scale, xspeed, yspeed) {
     return speed;
 	};
 
+	this.position = function() {
+		let position = new_element.translation;
+
+		return position
+	}
+
 	this.closest = function(targets){
 		let distances = [];
+		let circle;
 
 		// for (var i=0;i<targets.length;i++){
 		// 	distances[i] = dist(new_element.translation.x,new_element.translation.y,targets[i].x,targets[i].y);
@@ -168,15 +171,24 @@ function Shape(element, scale, xspeed, yspeed) {
 		for (var i=0;i<targets.length;i++){
 			distance = dist(new_element.translation.x,new_element.translation.y,targets[i].x,targets[i].y);
 			distances.push(distance);
+			// if (distance < 100){
+			// 	circle = targets[i];
+			// }
 		}
 
 		var minimum = Array.min(distances);
-		//var arr = Object.keys( distances ).map(function ( key ) { return distances[key]; });
-		//var min = Math.min.apply( null, arr );
-		//var index = getKeyByValue(distances,min);
-		//var attractor = targets[index];
 
-		return minimum
+		for (var i=0;i<targets.length;i++){
+			distance = dist(new_element.translation.x,new_element.translation.y,targets[i].x,targets[i].y);
+			if (distance == minimum){
+				circle = targets[i];
+				index = i;
+			}
+		}
+		return circle
+	}
+	this.facePt = function (){
+		return index
 	}
 	this.move = function(circle){
 		var vector = new Two.Vector(circle.x,circle.y);
@@ -186,10 +198,10 @@ function Shape(element, scale, xspeed, yspeed) {
 		acceleration = dir;
 
 		velocity.addSelf(acceleration);
+		velocity.dot(10);
 		location.addSelf(velocity);
 		new_element.translation = location;
-		// new_element.translation.set(point.x,point.y);
-		// return new_element
+
 	}
   this.display = function() {
 		let first = document.querySelector(this.element);
@@ -211,39 +223,36 @@ var redDots = [];
 var squigglies = [];
 var whities = [];
 
-document.onload = function () {
-	console.log("loaded");
-	for(var i=0;i<2;i++){
-		red = new Shape('#red',1,3,2);
-		red.display();
-		reds.push(red);
 
-		// blue = new Shape('#blue',1,2,-3);
-		// blue.display();
-		// blues.push(blue);
+for(var i=0;i<5;i++){
+	red = new Shape('#red',1,3,2);
+	red.display();
+	reds.push(red);
+	// blue = new Shape('#blue',1,2,-3);
+	// blue.display();
+	// blues.push(blue);
 
-		// 	yellow = new Shape('#yellow',1,1,1);
-		// 	yellow.display();
-		// 	yellows.push(yellow);
-		//
-		// 	pink = new Shape('#pink',1,4,1);
-		// 	pink.display();
-		// 	pinks.push(pink);
-		//
-		// 	redDot = new Shape('#redDot',1,-4,-2);
-		// 	redDot.display();
-		// 	redDots.push(redDot);
-		//
-		// 	squiggly = new Shape('#squiggly',1,-5,-3);
-		// 	squiggly.display();
-		// 	squigglies.push(squiggly);
-		//
-		// 	white = new Shape('#white',1,-1,-2);
-		// 	white.display();
-		// 	whities.push(white);
-	}
-	console.log(reds[0].translation);
+	// 	yellow = new Shape('#yellow',1,1,1);
+	// 	yellow.display();
+	// 	yellows.push(yellow);
+	//
+	// 	pink = new Shape('#pink',1,4,1);
+	// 	pink.display();
+	// 	pinks.push(pink);
+	//
+	// 	redDot = new Shape('#redDot',1,-4,-2);
+	// 	redDot.display();
+	// 	redDots.push(redDot);
+	//
+	// 	squiggly = new Shape('#squiggly',1,-5,-3);
+	// 	squiggly.display();
+	// 	squigglies.push(squiggly);
+	//
+	// 	white = new Shape('#white',1,-1,-2);
+	// 	white.display();
+	// 	whities.push(white);
 }
+reds.splice(0,1);
 two.renderer.domElement.style.background = '#1DA1F2';
 //two.update();
 let anchors = [];
@@ -278,20 +287,20 @@ two.bind('update', function(frameCount) {
 		if (status == 0) {
 			for(let i=0;i<reds.length;i++) {
 					let circle = reds[i].closest(face_Pts);
-					console.log(circle);
-					//anchors.push(reds[i]);
-					//anchors.push(circle);
+					anchors.push(reds[i]);
+					anchors.push(circle);
 			}
 			status = 1;
 		} else {
-			//draw circles
-			// for (var i=1;i<anchors.length;i+=2){
-			// 	two.makeCircle(anchors[i].x, anchors[i].y, 5);
-			// }
-			// //move shapes
-			// for (var i=0;i<anchors.length;i+=2){
-			// 	anchors[i].move(anchors[i+1]);
-			// }
+			//draw circles + move shapes
+			for (var i=0;i<anchors.length;i+=2){
+				let index = anchors[i].facePt();
+				let position = anchors[i].position();
+				two.makeCircle(face_Pts[index].x, face_Pts[index].y, 5);
+				var line = two.makeLine(position.x,position.y, face_Pts[index].x, face_Pts[index].y);
+				line.stroke = 'orangered';
+				anchors[i].move(anchors[i+1]);
+			}
 		}
 		// for(let i=0;i<blues.length;i++) {
 		// 		blues[i].closest(face_Pts);
