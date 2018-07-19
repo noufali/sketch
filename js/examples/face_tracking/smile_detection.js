@@ -193,14 +193,30 @@ function Shape(element, scale, xspeed, yspeed) {
 	this.move = function(position, circle){
 		var vector = new Two.Vector(circle.x,circle.y);
 		var dir = vector.subSelf(position);
-		dir.normalize();
-		dir.multiplyScalar(0.5);
+		//setting acceleration - rate of change for velocity which is 0.5 movement in x and y direction
+		dir = this.setMag(dir,0.5);
+		//dir.normalize();
+		//dir.multiplyScalar(2);
 		acceleration = dir;
 
+		//adding rate of change to velocity so it moves
 		velocity.addSelf(acceleration);
+		//limiting distance from target destination to 5 vector length
 		let new_velocity = this.limit(velocity,5);
+		//adding velocity to position of object so it moves
 		position.addSelf(new_velocity);
 		new_element.translation = position;
+	}
+	this.setMag = function(vector, smthg) {
+    let magnitude = this.calcMag(vector);
+
+    if (magnitude != 0) {
+      var v = smthg/magnitude;
+      magnitude = magnitude * v;
+      vector.x = vector.x * v;
+      vector.y = vector.y * v;
+    }
+		return vector
 	}
 	this.calcMag = function(v) {
 		let magnitude = Math.sqrt(v.x * v.x + v.y * v.y);
@@ -216,7 +232,6 @@ function Shape(element, scale, xspeed, yspeed) {
 			vector.x = vector.x * v;
 			vector.y = vector.y * v;
 		}
-		//console.log(this.mag);
 		//console.log(Math.sqrt(vector.x * vector.x + vector.y * vector.y));
 		return vector
 	}
@@ -241,7 +256,7 @@ var squigglies = [];
 var whities = [];
 
 
-for(var i=0;i<60;i++){
+for(var i=0;i<10;i++){
 	red = new Shape('#red',1,3,2);
 	red.display();
 	reds.push(red);
@@ -282,6 +297,28 @@ two.bind('update', function(frameCount) {
 
 	//reorganize list into dictionary with point objects
 	if (face) {
+		two.makeCircle(face.vertices[60], face.vertices[61], 5).noStroke().fill = '#FF8000';
+		two.makeCircle(face.vertices[58], face.vertices[59], 5).noStroke().fill = '#FF8000';
+		two.makeCircle(face.vertices[56], face.vertices[57], 5).noStroke().fill = '#FF8000';
+		two.makeCircle(face.vertices[54], face.vertices[55]-20, 5).noStroke().fill = '#FF8000';
+		two.makeCircle(face.vertices[66], face.vertices[67], 5).noStroke().fill = '#FF8000';
+		//two.makeCircle(face.vertices[16], face.vertices[17], 5);
+
+		let d = two.makeCurve(face.vertices[54], face.vertices[55]-20,face.vertices[56], face.vertices[57],face.vertices[58], face.vertices[59],face.vertices[60], face.vertices[61],face.vertices[66], face.vertices[67],face.vertices[90]+20, face.vertices[91]+30,face.vertices[84], face.vertices[85]-30);
+		d.noFill();
+		d.stroke = 'rgba(255, 255, 255, 0.5)';
+		d.linewidth = 10;
+		//right eye - 42
+		two.makeCircle(face.vertices[84], face.vertices[85]-30, 5).noStroke().fill = '#FF8000';
+		two.makeCircle(face.vertices[84], face.vertices[85]-30, 5).noStroke().fill = '#FF8000';
+		two.makeCircle(face.vertices[90]+20, face.vertices[91]+50, 5).noStroke().fill = '#FF8000';
+
+		//left eye - 39
+		two.makeCircle(face.vertices[78], face.vertices[79], 5).noStroke().fill = '#FF8000';
+		two.makeCircle(face.vertices[72]-30, face.vertices[73]+10, 5).noStroke().fill = '#FF8000';
+		//mouth - 51
+		// two.makeCircle(face.vertices[98], face.vertices[99], 5);
+		// two.makeCircle(face.vertices[111], face.vertices[112], 5);
 		for (var i=0;i<54;i+=2) {
 			// var circle = two.makeCircle(face.vertices[i], face.vertices[i+1], 5);
 			var point = {};
@@ -289,6 +326,28 @@ two.bind('update', function(frameCount) {
 			point['y'] = face.vertices[i+1];
 			face_Pts.push(point);
 		}
+		//let x1 = two.makeCircle(face_Pts[20].x, face_Pts[20].y+15, 5).noStroke().fill = '#FF8000';
+		let x2 = two.makeCircle(face_Pts[19].x+40, face_Pts[19].y-30, 5).noStroke().fill = '#FF8000';
+		let x3 = two.makeCircle(face_Pts[19].x, face_Pts[19].y-70, 5).noStroke().fill = '#FF8000';
+		let x4 = two.makeCircle(face_Pts[18].x-10, face_Pts[18].y-30, 5).noStroke().fill = '#FF8000';
+		//let x5 = two.makeCircle(face_Pts[17].x-10, face_Pts[17].y+15, 5).noStroke().fill = '#FF8000';
+
+		let a = two.makeCurve(face.vertices[78], face.vertices[79],face_Pts[19].x+40, face_Pts[19].y-30,face_Pts[19].x, face_Pts[19].y-70, face_Pts[18].x-10, face_Pts[18].y-30,face.vertices[72]-30, face.vertices[73]+10,true);
+		let a_cross = two.makeLine(face_Pts[19].x+40, face_Pts[19].y-30, face_Pts[18].x-10, face_Pts[18].y-30);
+		a.noFill();
+		a.stroke = 'rgba(255, 255, 255, 0.5)';
+		a.linewidth = 10;
+		a_cross.noFill();
+		a_cross.stroke = 'rgba(255, 255, 255, 0.5)';
+
+		//left eyebrow
+		//two.makeCircle(face_Pts[20].x, face_Pts[20].y, 5);
+		// two.makeCircle(face_Pts[18].x, face_Pts[18].y, 5);
+		// two.makeCircle(face_Pts[19].x, face_Pts[19].y, 5);
+		// two.makeCircle(face_Pts[17].x, face_Pts[17].y, 5);
+
+		//two.makePath(face_Pts[20].x, face_Pts[20].y-45, face_Pts[19].x, face_Pts[19].y-150,face_Pts[18].x, face_Pts[18].y-100,face_Pts[17].x, face_Pts[17].y-50).noFill().stroke = 'white';
+		//two.makeCircle(face_Pts[20].x, face_Pts[20].y-50, 5).fill = '#FF8000';
 		//draw circles on face points
 		// for(var j=0;j<face_Pts.length;j++){
 		// 	var circle = two.makeCircle(face_Pts[j].x, face_Pts[j].y, 5);
