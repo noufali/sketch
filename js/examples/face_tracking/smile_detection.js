@@ -198,10 +198,27 @@ function Shape(element, scale, xspeed, yspeed) {
 		acceleration = dir;
 
 		velocity.addSelf(acceleration);
-		velocity.dot(10);
-		location.addSelf(velocity);
+		let new_velocity = this.limit(velocity,2);
+		location.addSelf(new_velocity);
 		new_element.translation = location;
+	}
+	this.calcMag = function(v) {
+		let magnitude = Math.sqrt(v.x * v.x + v.y * v.y);
 
+		return magnitude
+	}
+	this.limit = function(vector, max) {
+		let magnitude = this.calcMag(vector);
+
+		if (magnitude > max) {
+			var v = max/magnitude;
+			magnitude = magnitude * v;
+			vector.x = vector.x * v;
+			vector.y = vector.y * v;
+		}
+		//console.log(this.mag);
+		//console.log(Math.sqrt(vector.x * vector.x + vector.y * vector.y));
+		return vector
 	}
   this.display = function() {
 		let first = document.querySelector(this.element);
@@ -228,9 +245,10 @@ for(var i=0;i<5;i++){
 	red = new Shape('#red',1,3,2);
 	red.display();
 	reds.push(red);
-	// blue = new Shape('#blue',1,2,-3);
-	// blue.display();
-	// blues.push(blue);
+
+	blue = new Shape('#blue',1,2,-3);
+	blue.display();
+	blues.push(blue);
 
 	// 	yellow = new Shape('#yellow',1,1,1);
 	// 	yellow.display();
@@ -253,6 +271,7 @@ for(var i=0;i<5;i++){
 	// 	whities.push(white);
 }
 reds.splice(0,1);
+blues.splice(0,1);
 two.renderer.domElement.style.background = '#1DA1F2';
 //two.update();
 let anchors = [];
@@ -289,6 +308,10 @@ two.bind('update', function(frameCount) {
 					let circle = reds[i].closest(face_Pts);
 					anchors.push(reds[i]);
 					anchors.push(circle);
+
+					let circle_B = blues[i].closest(face_Pts);
+					anchors.push(blues[i]);
+					anchors.push(circle_B);
 			}
 			status = 1;
 		} else {
@@ -312,7 +335,7 @@ two.bind('update', function(frameCount) {
 		status = 0;
 		for(let i=0;i<reds.length;i++) {
 	  		reds[i].update();
-	   		//blues[i].update();
+	   		blues[i].update();
 				//yellows[i].update();
 				//pinks[i].update();
 				//redDots[i].update();
