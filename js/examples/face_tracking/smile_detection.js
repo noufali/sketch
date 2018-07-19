@@ -190,17 +190,17 @@ function Shape(element, scale, xspeed, yspeed) {
 	this.facePt = function (){
 		return index
 	}
-	this.move = function(circle){
+	this.move = function(position, circle){
 		var vector = new Two.Vector(circle.x,circle.y);
-		var dir = vector.subSelf(location);
+		var dir = vector.subSelf(position);
 		dir.normalize();
 		dir.multiplyScalar(0.5);
 		acceleration = dir;
 
 		velocity.addSelf(acceleration);
-		let new_velocity = this.limit(velocity,2);
-		location.addSelf(new_velocity);
-		new_element.translation = location;
+		let new_velocity = this.limit(velocity,5);
+		position.addSelf(new_velocity);
+		new_element.translation = position;
 	}
 	this.calcMag = function(v) {
 		let magnitude = Math.sqrt(v.x * v.x + v.y * v.y);
@@ -226,7 +226,7 @@ function Shape(element, scale, xspeed, yspeed) {
 		new_element.translation.set(getRandom(0,1000),getRandom(0,650));
 		location = new Two.Vector(new_element.translation.x,new_element.translation.y);
 		velocity = new Two.Vector(0,0);
-		acceleration = new Two.Vector(this.xspeed,this.yspeed);
+		acceleration = new Two.Vector(0,0);
 
 		return new_element
   }
@@ -241,7 +241,7 @@ var squigglies = [];
 var whities = [];
 
 
-for(var i=0;i<5;i++){
+for(var i=0;i<60;i++){
 	red = new Shape('#red',1,3,2);
 	red.display();
 	reds.push(red);
@@ -322,7 +322,7 @@ two.bind('update', function(frameCount) {
 				two.makeCircle(face_Pts[index].x, face_Pts[index].y, 5);
 				var line = two.makeLine(position.x,position.y, face_Pts[index].x, face_Pts[index].y);
 				line.stroke = 'orangered';
-				anchors[i].move(anchors[i+1]);
+				anchors[i].move(position,face_Pts[index]);
 			}
 		}
 		// for(let i=0;i<blues.length;i++) {
