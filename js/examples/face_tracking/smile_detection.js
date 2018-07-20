@@ -293,32 +293,59 @@ let anchors = [];
 
 two.bind('update', function(frameCount) {
 	var face_Pts = [];
+	var a_Pts = [];
+	var d_Pts = [];
+	var p_Pts = [];
 	two.clear();
 
 	//reorganize list into dictionary with point objects
 	if (face) {
-		two.makeCircle(face.vertices[60], face.vertices[61], 5).noStroke().fill = '#FF8000';
-		two.makeCircle(face.vertices[58], face.vertices[59], 5).noStroke().fill = '#FF8000';
-		two.makeCircle(face.vertices[56], face.vertices[57], 5).noStroke().fill = '#FF8000';
-		two.makeCircle(face.vertices[54], face.vertices[55]-20, 5).noStroke().fill = '#FF8000';
-		two.makeCircle(face.vertices[66], face.vertices[67], 5).noStroke().fill = '#FF8000';
-		//two.makeCircle(face.vertices[16], face.vertices[17], 5);
+		// D LETTER
+		// two.makeCircle(face.vertices[60], face.vertices[61], 5).noStroke().fill = '#FF8000';
+		// two.makeCircle(face.vertices[58], face.vertices[59], 5).noStroke().fill = '#FF8000';
+		// two.makeCircle(face.vertices[56], face.vertices[57], 5).noStroke().fill = '#FF8000';
+		// two.makeCircle(face.vertices[54], face.vertices[55]-20, 5).noStroke().fill = '#FF8000';
+		// two.makeCircle(face.vertices[66], face.vertices[67], 5).noStroke().fill = '#FF8000';
+		// two.makeCircle(face.vertices[84], face.vertices[85]-30, 5).noStroke().fill = '#FF8000'; //right eye - 42
+		// two.makeCircle(face.vertices[84], face.vertices[85]-30, 5).noStroke().fill = '#FF8000';
+		// two.makeCircle(face.vertices[90]+20, face.vertices[91]+50, 5).noStroke().fill = '#FF8000';
 
-		let d = two.makeCurve(face.vertices[54], face.vertices[55]-20,face.vertices[56], face.vertices[57],face.vertices[58], face.vertices[59],face.vertices[60], face.vertices[61],face.vertices[66], face.vertices[67],face.vertices[90]+20, face.vertices[91]+30,face.vertices[84], face.vertices[85]-30);
+		let d_cross = two.makeLine(face.vertices[54], face.vertices[55]-40,face.vertices[66], face.vertices[67]);
+		d_Pts.push( {'x':face.vertices[54],'y':face.vertices[55]-40} );
+		d_Pts.push( {'x':face.vertices[66],'y':face.vertices[67]} );
+		let d = two.makeCurve(face.vertices[66], face.vertices[67],face.vertices[90]+20, face.vertices[91]+30,face.vertices[84], face.vertices[85]-30,face.vertices[54], face.vertices[55]-40,true);
+		d_Pts.push( {'x':face.vertices[66],'y':face.vertices[67]} );
+		d_Pts.push( {'x':face.vertices[90]+20,'y':face.vertices[91]+30} );
+		d_Pts.push( {'x':face.vertices[84],'y':face.vertices[85]-30} );
+		d_Pts.push( {'x':face.vertices[54],'y':face.vertices[55]-40} );
+		//face.vertices[54], face.vertices[55]-20,face.vertices[56], face.vertices[57],face.vertices[58], face.vertices[59],face.vertices[60], face.vertices[61]
+		d.stroke = 'rgba(255, 255, 255, 0.5)'
 		d.noFill();
-		d.stroke = 'rgba(255, 255, 255, 0.5)';
 		d.linewidth = 10;
-		//right eye - 42
-		two.makeCircle(face.vertices[84], face.vertices[85]-30, 5).noStroke().fill = '#FF8000';
-		two.makeCircle(face.vertices[84], face.vertices[85]-30, 5).noStroke().fill = '#FF8000';
-		two.makeCircle(face.vertices[90]+20, face.vertices[91]+50, 5).noStroke().fill = '#FF8000';
-
-		//left eye - 39
-		two.makeCircle(face.vertices[78], face.vertices[79], 5).noStroke().fill = '#FF8000';
-		two.makeCircle(face.vertices[72]-30, face.vertices[73]+10, 5).noStroke().fill = '#FF8000';
+		d_cross.linewidth = 10;
+		d_cross.stroke = 'rgba(255, 255, 255, 0.5)';
 		//mouth - 51
 		// two.makeCircle(face.vertices[98], face.vertices[99], 5);
-		// two.makeCircle(face.vertices[111], face.vertices[112], 5);
+
+		// P LETTER
+		// two.makeCircle(face.vertices[96], face.vertices[97], 5).noStroke().fill = '#FF8000';
+		// two.makeCircle(face.vertices[8]-50, face.vertices[9], 5).noStroke().fill = '#FF8000';
+		// two.makeCircle(face.vertices[8]-50, face.vertices[9]+100, 5).noStroke().fill = '#FF8000';
+		// two.makeCircle(face.vertices[8]-50, face.vertices[9]+130, 5).noStroke().fill = '#FF8000';
+		let p_cross = two.makeLine(face.vertices[8]-50, face.vertices[9]+130,face.vertices[8]-50, face.vertices[9]);
+		p_Pts.push( {'x':face.vertices[8]-50,'y':face.vertices[9]+130} );
+		p_Pts.push( {'x':face.vertices[8]-50,'y':face.vertices[9]} );
+		let p = two.makeCurve(face.vertices[8]-50, face.vertices[9],face.vertices[96], face.vertices[97],face.vertices[8]-50, face.vertices[9]+100,true);
+		p_Pts.push( {'x':face.vertices[8]-50,'y':face.vertices[9]} );
+		p_Pts.push( {'x':face.vertices[96],'y':face.vertices[97]} );
+		p_Pts.push( {'x':face.vertices[8]-50,'y':face.vertices[9]+100} );
+		p.noFill();
+		p.stroke = 'rgba(255, 255, 255, 0.5)';
+		// p.noStroke();
+		p.linewidth = 10;
+		p_cross.linewidth = 10;
+		p_cross.stroke = 'rgba(255, 255, 255, 0.5)';
+
 		for (var i=0;i<54;i+=2) {
 			// var circle = two.makeCircle(face.vertices[i], face.vertices[i+1], 5);
 			var point = {};
@@ -326,28 +353,29 @@ two.bind('update', function(frameCount) {
 			point['y'] = face.vertices[i+1];
 			face_Pts.push(point);
 		}
-		//let x1 = two.makeCircle(face_Pts[20].x, face_Pts[20].y+15, 5).noStroke().fill = '#FF8000';
-		let x2 = two.makeCircle(face_Pts[19].x+40, face_Pts[19].y-30, 5).noStroke().fill = '#FF8000';
-		let x3 = two.makeCircle(face_Pts[19].x, face_Pts[19].y-70, 5).noStroke().fill = '#FF8000';
-		let x4 = two.makeCircle(face_Pts[18].x-10, face_Pts[18].y-30, 5).noStroke().fill = '#FF8000';
-		//let x5 = two.makeCircle(face_Pts[17].x-10, face_Pts[17].y+15, 5).noStroke().fill = '#FF8000';
+		// A LETTER
+		// two.makeCircle(face_Pts[19].x+40, face_Pts[19].y-30, 5).noStroke().fill = '#FF8000';
+		// two.makeCircle(face_Pts[19].x, face_Pts[19].y-70, 5).noStroke().fill = '#FF8000';
+		// two.makeCircle(face_Pts[18].x-10, face_Pts[18].y-30, 5).noStroke().fill = '#FF8000';
+		// two.makeCircle(face.vertices[78], face.vertices[79], 5).noStroke().fill = '#FF8000'; //left eye - 39
+		// two.makeCircle(face.vertices[72]-30, face.vertices[73]+10, 5).noStroke().fill = '#FF8000';
+
 
 		let a = two.makeCurve(face.vertices[78], face.vertices[79],face_Pts[19].x+40, face_Pts[19].y-30,face_Pts[19].x, face_Pts[19].y-70, face_Pts[18].x-10, face_Pts[18].y-30,face.vertices[72]-30, face.vertices[73]+10,true);
+		a_Pts.push( {'x':face.vertices[78],'y':face.vertices[79]} );
+		a_Pts.push( {'x':face_Pts[19].x+40, 'y':face_Pts[19].y-30} );
+		a_Pts.push( {'x':face_Pts[19].x, 'y':face_Pts[19].y-70} );
+		a_Pts.push( {'x':face_Pts[18].x-10, 'y':face_Pts[18].y-30} );
+		a_Pts.push( {'x':face.vertices[72]-30, 'y':face.vertices[73]+10} );
 		let a_cross = two.makeLine(face_Pts[19].x+40, face_Pts[19].y-30, face_Pts[18].x-10, face_Pts[18].y-30);
+		a_Pts.push( {'x':face_Pts[19].x+40, 'y':face_Pts[19].y-30} );
+		a_Pts.push( {'x':face_Pts[18].x-10, 'y':face_Pts[18].y-30});
 		a.noFill();
 		a.stroke = 'rgba(255, 255, 255, 0.5)';
 		a.linewidth = 10;
 		a_cross.noFill();
 		a_cross.stroke = 'rgba(255, 255, 255, 0.5)';
 
-		//left eyebrow
-		//two.makeCircle(face_Pts[20].x, face_Pts[20].y, 5);
-		// two.makeCircle(face_Pts[18].x, face_Pts[18].y, 5);
-		// two.makeCircle(face_Pts[19].x, face_Pts[19].y, 5);
-		// two.makeCircle(face_Pts[17].x, face_Pts[17].y, 5);
-
-		//two.makePath(face_Pts[20].x, face_Pts[20].y-45, face_Pts[19].x, face_Pts[19].y-150,face_Pts[18].x, face_Pts[18].y-100,face_Pts[17].x, face_Pts[17].y-50).noFill().stroke = 'white';
-		//two.makeCircle(face_Pts[20].x, face_Pts[20].y-50, 5).fill = '#FF8000';
 		//draw circles on face points
 		// for(var j=0;j<face_Pts.length;j++){
 		// 	var circle = two.makeCircle(face_Pts[j].x, face_Pts[j].y, 5);
@@ -357,6 +385,8 @@ two.bind('update', function(frameCount) {
 		// 	//var circle = two.makeCircle(face.vertices[i], face.vertices[i+1], 5);
 		// 	two.makePath(face.vertices[i], face.vertices[i+1], face.vertices[i+2], face.vertices[i+3], open);
 		// }
+		a_Pts.push(d_Pts);
+		a_Pts.push(p_Pts);
 	}
 
 	//if smiling, stop shape movement
@@ -364,11 +394,11 @@ two.bind('update', function(frameCount) {
 		console.log("smiling");
 		if (status == 0) {
 			for(let i=0;i<reds.length;i++) {
-					let circle = reds[i].closest(face_Pts);
+					let circle = reds[i].closest(a_Pts);
 					anchors.push(reds[i]);
 					anchors.push(circle);
 
-					let circle_B = blues[i].closest(face_Pts);
+					let circle_B = blues[i].closest(a_Pts);
 					anchors.push(blues[i]);
 					anchors.push(circle_B);
 			}
@@ -378,10 +408,10 @@ two.bind('update', function(frameCount) {
 			for (var i=0;i<anchors.length;i+=2){
 				let index = anchors[i].facePt();
 				let position = anchors[i].position();
-				two.makeCircle(face_Pts[index].x, face_Pts[index].y, 5);
-				var line = two.makeLine(position.x,position.y, face_Pts[index].x, face_Pts[index].y);
+				two.makeCircle(a_Pts[index].x, a_Pts[index].y, 5);
+				var line = two.makeLine(position.x,position.y, a_Pts[index].x, a_Pts[index].y);
 				line.stroke = 'orangered';
-				anchors[i].move(position,face_Pts[index]);
+				anchors[i].move(position,a_Pts[index]);
 			}
 		}
 		// for(let i=0;i<blues.length;i++) {
