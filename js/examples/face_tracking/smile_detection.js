@@ -187,7 +187,7 @@ function Shape(element, scale, xspeed, yspeed) {
 		}
 		return circle
 	}
-	this.facePt = function (){
+	this.facePt = function(){
 		return index
 	}
 	this.move = function(position, circle){
@@ -301,19 +301,19 @@ two.bind('update', function(frameCount) {
 	//reorganize list into dictionary with point objects
 	if (face) {
 		// D LETTER
-		// two.makeCircle(face.vertices[60], face.vertices[61], 5).noStroke().fill = '#FF8000';
-		// two.makeCircle(face.vertices[58], face.vertices[59], 5).noStroke().fill = '#FF8000';
-		// two.makeCircle(face.vertices[56], face.vertices[57], 5).noStroke().fill = '#FF8000';
-		// two.makeCircle(face.vertices[54], face.vertices[55]-20, 5).noStroke().fill = '#FF8000';
+		two.makeCircle(face.vertices[60], face.vertices[61], 5).noStroke().fill = '#FF8000';
+		two.makeCircle(face.vertices[58], face.vertices[59], 5).noStroke().fill = '#FF8000';
+		two.makeCircle(face.vertices[56], face.vertices[57], 5).noStroke().fill = '#FF8000';
+		two.makeCircle(face.vertices[54], face.vertices[55]-20, 5).noStroke().fill = '#FF8000';
 		// two.makeCircle(face.vertices[66], face.vertices[67], 5).noStroke().fill = '#FF8000';
 		// two.makeCircle(face.vertices[84], face.vertices[85]-30, 5).noStroke().fill = '#FF8000'; //right eye - 42
 		// two.makeCircle(face.vertices[84], face.vertices[85]-30, 5).noStroke().fill = '#FF8000';
 		// two.makeCircle(face.vertices[90]+20, face.vertices[91]+50, 5).noStroke().fill = '#FF8000';
 
-		let d_cross = two.makeLine(face.vertices[54], face.vertices[55]-40,face.vertices[66], face.vertices[67]);
+		//let d_cross = two.makeLine(face.vertices[54], face.vertices[55]-40,face.vertices[66], face.vertices[67]);
 		d_Pts.push( {'x':face.vertices[54],'y':face.vertices[55]-40} );
 		d_Pts.push( {'x':face.vertices[66],'y':face.vertices[67]} );
-		let d = two.makeCurve(face.vertices[66], face.vertices[67],face.vertices[90]+20, face.vertices[91]+30,face.vertices[84], face.vertices[85]-30,face.vertices[54], face.vertices[55]-40,true);
+		let d = two.makeCurve(face.vertices[60], face.vertices[61],face.vertices[58], face.vertices[59],face.vertices[54],face.vertices[56], face.vertices[57],face.vertices[55]-40,face.vertices[56], face.vertices[57],face.vertices[66],face.vertices[60], face.vertices[61], face.vertices[67],face.vertices[90]+20, face.vertices[91]+30,face.vertices[84], face.vertices[85]-30,face.vertices[54], face.vertices[55]-40);
 		d_Pts.push( {'x':face.vertices[66],'y':face.vertices[67]} );
 		d_Pts.push( {'x':face.vertices[90]+20,'y':face.vertices[91]+30} );
 		d_Pts.push( {'x':face.vertices[84],'y':face.vertices[85]-30} );
@@ -322,29 +322,30 @@ two.bind('update', function(frameCount) {
 		d.stroke = 'rgba(255, 255, 255, 0.5)'
 		d.noFill();
 		d.linewidth = 10;
-		d_cross.linewidth = 10;
-		d_cross.stroke = 'rgba(255, 255, 255, 0.5)';
+		// d_cross.linewidth = 10;
+		// d_cross.stroke = 'rgba(255, 255, 255, 0.5)';
 		//mouth - 51
 		// two.makeCircle(face.vertices[98], face.vertices[99], 5);
 
 		// P LETTER
-		// two.makeCircle(face.vertices[96], face.vertices[97], 5).noStroke().fill = '#FF8000';
-		// two.makeCircle(face.vertices[8]-50, face.vertices[9], 5).noStroke().fill = '#FF8000';
-		// two.makeCircle(face.vertices[8]-50, face.vertices[9]+100, 5).noStroke().fill = '#FF8000';
-		// two.makeCircle(face.vertices[8]-50, face.vertices[9]+130, 5).noStroke().fill = '#FF8000';
-		let p_cross = two.makeLine(face.vertices[8]-50, face.vertices[9]+130,face.vertices[8]-50, face.vertices[9]);
+		two.makeCircle(face.vertices[96], face.vertices[97], 5).noStroke().fill = '#FF8000';
+		two.makeCircle(face.vertices[8]-50, face.vertices[9], 5).noStroke().fill = '#FF8000';
+		two.makeCircle(face.vertices[8]-50, face.vertices[9]+100, 5).noStroke().fill = '#FF8000';
+		two.makeCircle(face.vertices[8]-50, face.vertices[9]+130, 5).noStroke().fill = '#FF8000';
+
+		// let p_cross = two.makeLine(face.vertices[8]-50, face.vertices[9]+130,face.vertices[8]-50, face.vertices[9]);
 		p_Pts.push( {'x':face.vertices[8]-50,'y':face.vertices[9]+130} );
 		p_Pts.push( {'x':face.vertices[8]-50,'y':face.vertices[9]} );
-		let p = two.makeCurve(face.vertices[8]-50, face.vertices[9],face.vertices[96], face.vertices[97],face.vertices[8]-50, face.vertices[9]+100,true);
+		let p = two.makeCurve(face.vertices[8]-50, face.vertices[9]+130,face.vertices[8]-50, face.vertices[9]+100,face.vertices[8]-50, face.vertices[9],face.vertices[96], face.vertices[97],face.vertices[8]-50, face.vertices[9]+100,true);
 		p_Pts.push( {'x':face.vertices[8]-50,'y':face.vertices[9]} );
 		p_Pts.push( {'x':face.vertices[96],'y':face.vertices[97]} );
 		p_Pts.push( {'x':face.vertices[8]-50,'y':face.vertices[9]+100} );
-		p.noFill();
+		p.fill = 'rgba(255, 255, 255, 0.5)';
 		p.stroke = 'rgba(255, 255, 255, 0.5)';
 		// p.noStroke();
-		p.linewidth = 10;
-		p_cross.linewidth = 10;
-		p_cross.stroke = 'rgba(255, 255, 255, 0.5)';
+		p.linewidth = 1;
+		//p_cross.linewidth = 10;
+		//p_cross.stroke = 'rgba(255, 255, 255, 0.5)';
 
 		for (var i=0;i<54;i+=2) {
 			// var circle = two.makeCircle(face.vertices[i], face.vertices[i+1], 5);
@@ -385,8 +386,12 @@ two.bind('update', function(frameCount) {
 		// 	//var circle = two.makeCircle(face.vertices[i], face.vertices[i+1], 5);
 		// 	two.makePath(face.vertices[i], face.vertices[i+1], face.vertices[i+2], face.vertices[i+3], open);
 		// }
-		a_Pts.push(d_Pts);
-		a_Pts.push(p_Pts);
+		for(let i=0;i<d_Pts.length;i++) {
+			a_Pts.push(d_Pts[i]);
+		}
+		for(let i=0;i<p_Pts.length;i++) {
+			a_Pts.push(p_Pts[i]);
+		}
 	}
 
 	//if smiling, stop shape movement
